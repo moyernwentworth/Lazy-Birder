@@ -1,0 +1,23 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block title %}My Form page{% endblock %}
+{% block content %}
+<h1>My Form</h1>
+<div class='container-fluid'>
+    <div class = 'row'>
+        <div class='col-md-6' style="margin: 0 auto;">
+            <form>
+                <div class='form-group'>
+                    <label for='mytext'>My Text</label>
+                    <input type='text' id='mytext' class='form-control'>
+                </div>
+                <div class='form-group'>
+                    <label for="mytextarea">My TextArea</label>
+                    <textarea id="mytextarea" name="mytextarea" class="form-control"></textarea>
+                    
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
