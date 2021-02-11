@@ -1,10 +1,29 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 
+posts = [
+    {
+        'author': 'Wil Eddy',
+        'title': 'Blog post',
+        'content': 'First post',
+        'date_posted': 'May 6, 2021'
+    },
+    {
+        'author': 'Wil Eddy',
+        'title': 'Blog post 2',
+        'content': 'Second post',
+        'date_posted': 'May 8, 2021'
+    }
+]
+
 
 def home(request):
-    return HttpResponse('<h1>Dashbird Home<h1>')
+    context = {
+        'posts': posts
+    }
+    return render(request, 'dashbird/home.html', context)
 
 
 def about(request):
-    return HttpResponse('<h1>Dashbird About<h1>')
+    return render(request, 'dashbird/about.html', {'title': 'About'})
+
