@@ -121,5 +121,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-
+# django specific templating
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+# value is gotten from the apps urls.py under the name value
+LOGIN_REDIRECT_URL = 'dashbird-home'
+LOGIN_URL = 'login'
