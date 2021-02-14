@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -121,6 +122,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# full path to tell django where to store files, in file system not db
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# how to access media via the browser
+MEDIA_URL = '/media/'
 # django specific templating
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # value is gotten from the apps urls.py under the name value
