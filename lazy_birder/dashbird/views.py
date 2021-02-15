@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.models import User
 from .models import Post
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
@@ -24,7 +25,24 @@ class PostListView(ListView):
     context_object_name = 'posts'
     # posts go from most recent on the top
     ordering = ['-date_posted']
+    # set number of posts per page
+    paginate_by = 5
 
+
+class UserPostListView(ListView):
+    model = Post
+    # <app>/<model>_<viewtype>.html
+    template_name = 'dashbird/user_posts.html'
+    context_object_name = 'posts'
+    # set number of posts per page
+    paginate_by = 5
+
+    def get_queryset(self):
+        """filter posts by user, show them reverse chronologically"""
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        return Post.objects.filter(author=user).order_by('-date_posted')
+
+        
 
 class PostDetailView(DetailView):
     model = Post
