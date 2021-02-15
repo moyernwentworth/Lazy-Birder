@@ -1,6 +1,3 @@
-# Lazy-Birder
-## This will be were we place code for our senoir project!
-
 I'm using python 3.8.2, doesn't really matter what you're using. Just a heads up. If you're on a *nix system though consider getting `pyenv`, allows you to download versions from command line as opposed to going to python.org blah blah blah.
 
 First thing is to clone this and then in the top directory run:

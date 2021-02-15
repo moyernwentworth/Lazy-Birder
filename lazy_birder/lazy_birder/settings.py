@@ -132,3 +132,11 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # value is gotten from the apps urls.py under the name value
 LOGIN_REDIRECT_URL = 'dashbird-home'
 LOGIN_URL = 'login'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+# not working couldn't find associated google link to add my account
+# EMAIL_HOST_USER = os.environ.get('username')
+# EMAIL_HOST_PASSWORD = os.environ.get('password')
