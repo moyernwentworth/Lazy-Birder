@@ -22,3 +22,8 @@ make sure you add path to that .txt file if need be. This will install all neces
 `python manage.py runserver`
 
 and now the site is locally served on port 8000. Open up chrome to try it out. Open the `urls.py` file in `dashbird` directory and add the first argument in each list item to get to a new page. If you have any questions come find me. Crtl + C will stop serving the site and `deactivate` will stop the virtual environment. 
+
+Password reset stuff
+you must enter the email that is currently logged in in order to send the change email 
+you must also go into your google settings and allow less secure app access in order to send
+probably best to turn that off after
