@@ -1,0 +1,7 @@
+# Function dependencies, for example:
+# package>=version
+SQLAlchemy==1.3.12
+# If your database is MySQL, uncomment the following line:
+PyMySQL==0.9.3
+# If your database is PostgreSQL, uncomment the following line:
+#pg8000==1.13.2
