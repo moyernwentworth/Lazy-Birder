@@ -3,14 +3,38 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.contrib.auth.models import User
 from .models import Post
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from datetime import datetime
+from PIL import Image
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 # this is a function based view, have to render the request
 def home(request):
-    context = {
-        'posts': Post.objects.all()
-    }
-    return render(request, 'dashbird/home.html', context)
+    current_user = request.user
+    automated_post = Post(
+            title = 'Test Post',
+            author = current_user,
+            content = 'This is an example post',
+            date_posted = datetime.now(),
+            bird_photo = 'media/test1.jpeg'
+        )
+    automated_post.save()
+    post_list =  Post.objects.filter(author=current_user).order_by('-date_posted')
+    # if we want to show all users posts
+    # post_list = Post.objects.all().order_by('-date_posted')
+    page = request.GET.get('page', 1)
+    paginator = Paginator(post_list, 5)
+    try: 
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
+
+    # context = {
+    #     'posts': Post.objects.all()
+    # }
+    return render(request, 'dashbird/home.html', {'posts': posts})
 
 
 def about(request):
@@ -28,6 +52,17 @@ class PostListView(ListView):
     # set number of posts per page
     paginate_by = 5
 
+    def automate_posts(self, request):
+        automated_post = Post(
+            title = 'Test Post',
+            author = self.request.user,
+            content = 'This is an example post',
+            date_posted = datetime.now(),
+            bird_photo = 'media/test1.jpeg'
+        )
+        automated_post.save()
+
+
 
 class UserPostListView(ListView):
     model = Post
@@ -36,6 +71,7 @@ class UserPostListView(ListView):
     context_object_name = 'posts'
     # set number of posts per page
     paginate_by = 5
+
 
     def get_queryset(self):
         """filter posts by user, show them reverse chronologically"""
@@ -50,7 +86,7 @@ class PostDetailView(DetailView):
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
-    fields = ['title', 'content']
+    fields = ['title', 'content', 'bird_photo']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -59,7 +95,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
-    fields = ['title', 'content']
+    fields = ['title', 'content', 'bird_photo']
 
     def form_valid(self, form):
         form.instance.author = self.request.user

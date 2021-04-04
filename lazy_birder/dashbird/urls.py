@@ -11,7 +11,7 @@ from . import views
 
 urlpatterns = [
     # calling a class as a view
-    path('', PostListView.as_view(), name='dashbird-home'),
+    path('', views.home, name='dashbird-home'),
     path('user/<str:username>', UserPostListView.as_view(), name='user-posts'),
     # calling a function as a view
     path('about/', views.about, name='dashbird-about'),
