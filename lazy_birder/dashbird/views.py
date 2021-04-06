@@ -6,19 +6,37 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from datetime import datetime
 from PIL import Image
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+import os, shutil
 
 
 # this is a function based view, have to render the request
 def home(request):
+    # get current logged in user
     current_user = request.user
-    automated_post = Post(
-            title = 'Test Post',
-            author = current_user,
-            content = 'This is an example post',
-            date_posted = datetime.now(),
-            bird_photo = 'media/test1.jpeg'
+    # see what pics have been added to new_dir in each user's
+    old_path = os.path.join(os.path.dirname(os.path.dirname(__file__)),'media', str(current_user), 'old')
+    new_path = os.path.join(os.path.dirname(os.path.dirname(__file__)),'media', str(current_user), 'new')
+    if not os.path.isdir(old_path):
+        os.mkdir(old_path)
+    if not os.path.isdir(new_path):
+        os.mkdir(new_path)
+    new_pic_list = [pic for pic in os.listdir(new_path)]
+    # create post for each new image
+    for pic in new_pic_list:
+        # move new photo to old folder where it will be served
+        shutil.move(os.path.join(new_path, pic), old_path)
+        # Create post
+        automated_post = Post(
+                title = 'Test Post',
+                author = current_user,
+                content = 'This is an example post',
+                date_posted = datetime.now(),
+                bird_photo = os.path.join('media', str(current_user), 'old', pic)
         )
-    automated_post.save()
+        automated_post.save()
+    # ensure list is empty next time through
+    new_pic_list = []
+
     post_list =  Post.objects.filter(author=current_user).order_by('-date_posted')
     # if we want to show all users posts
     # post_list = Post.objects.all().order_by('-date_posted')
@@ -82,6 +100,7 @@ class UserPostListView(ListView):
 
 class PostDetailView(DetailView):
     model = Post
+    fields = ['title', 'content', 'bird_photo']
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
