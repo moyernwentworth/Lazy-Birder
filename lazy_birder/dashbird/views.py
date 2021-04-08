@@ -7,19 +7,26 @@ from datetime import datetime
 from PIL import Image
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import os, shutil
+from django.contrib.auth.decorators import login_required
 
 
 # this is a function based view, have to render the request
+# ensure user is logged in
+@login_required
 def home(request):
     # get current logged in user
     current_user = request.user
-    # see what pics have been added to new_dir in each user's
+    # create paths for user's folders that will hold images
+    base_path = os.path.join(os.path.dirname(os.path.dirname(__file__)),'media', str(current_user))
     old_path = os.path.join(os.path.dirname(os.path.dirname(__file__)),'media', str(current_user), 'old')
     new_path = os.path.join(os.path.dirname(os.path.dirname(__file__)),'media', str(current_user), 'new')
+    if not os.path.isdir(base_path):
+        os.mkdir(base_path) 
     if not os.path.isdir(old_path):
         os.mkdir(old_path)
     if not os.path.isdir(new_path):
         os.mkdir(new_path)
+    # see what pics have been added to new_dir in each user's
     new_pic_list = [pic for pic in os.listdir(new_path)]
     # create post for each new image
     for pic in new_pic_list:
@@ -29,7 +36,7 @@ def home(request):
         automated_post = Post(
                 title = 'Test Post',
                 author = current_user,
-                content = 'This is an example post',
+                content = 'Bird Species Here',
                 date_posted = datetime.now(),
                 bird_photo = os.path.join('media', str(current_user), 'old', pic)
         )
@@ -102,14 +109,6 @@ class PostDetailView(DetailView):
     model = Post
     fields = ['title', 'content', 'bird_photo']
 
-
-class PostCreateView(LoginRequiredMixin, CreateView):
-    model = Post
-    fields = ['title', 'content', 'bird_photo']
-
-    def form_valid(self, form):
-        form.instance.author = self.request.user
-        return super().form_valid(form)
 
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
