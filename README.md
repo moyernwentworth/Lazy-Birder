@@ -27,3 +27,5 @@ Password reset stuff
 you must enter the email that is currently logged in in order to send the change email 
 you must also go into your google settings and allow less secure app access in order to send
 probably best to turn that off after
+
+Images go in new folder, get moved to old
