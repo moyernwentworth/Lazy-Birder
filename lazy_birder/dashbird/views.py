@@ -30,6 +30,10 @@ def home(request):
     new_pic_list = [pic for pic in os.listdir(new_path)]
     # create post for each new image
     for pic in new_pic_list:
+        # resize pic
+        resized_pic = Image.open(os.path.join(new_path, pic))
+        resized_pic = resized_pic.resize((400, 300))
+        resized_pic.save(os.path.join(new_path, pic))
         # move new photo to old folder where it will be served
         shutil.move(os.path.join(new_path, pic), old_path)
         # Create post
