@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import login_required
 # this is a function based view, have to render the request
 # ensure user is logged in
 @login_required
-def home(request):
+def bird_posts(request):
     # get current logged in user
     current_user = request.user
     # create paths for user's folders that will hold images
@@ -42,7 +42,7 @@ def home(request):
                 author = current_user,
                 content = 'Bird Species Here',
                 date_posted = datetime.now(),
-                bird_photo = os.path.join('media', str(current_user), 'old', pic)
+                bird_photo = os.path.join('..', 'media', str(current_user), 'old', pic)
         )
         automated_post.save()
     # ensure list is empty next time through
@@ -63,11 +63,11 @@ def home(request):
     # context = {
     #     'posts': Post.objects.all()
     # }
-    return render(request, 'dashbird/home.html', {'posts': posts})
+    return render(request, 'dashbird/bird_posts.html', {'posts': posts})
 
 
-def about(request):
-    return render(request, 'dashbird/about.html', {'title': 'About'})
+def home(request):
+    return render(request, 'dashbird/home.html')
 
 
 # this is a class based view
