@@ -1,4 +1,76 @@
 {% extends "dashbird/base.html" %}
+{% load static %}
 {% block content %}
-<h1>Test</h1>
+<head>
+<link rel="stylesheet" type="text/css" href="{% static 'dashbird/styles.css' %}">
+</head>
+
+<body>
+  <main>
+    <!-- ***********************  ABOUT / PROFILE  *********************** -->
+    <header>
+      <div class="content-wrap">
+        <h1>Lazy Birder</h1>
+        <h2>Wil Eddy & Nick Moyer</h2>
+      </div>
+    </header>
+
+      <!-- ********************  ABSTRACT  ********************* -->
+    <section class="projects">
+      <div class="content-wrap divider">
+        <h2>Abstract</h2>
+        <p>
+          This project was created by two undergraduate computer science students for a senior project class. 
+          The overarching goal is to have users learn more about the birds in their backyard. Lazy Birder is a 
+          unique application consisting of a connected network of hardware and software components which 
+          classifies birds, by species, that visit your home. This process is initialized when a bird comes to 
+          your bird feeder, specifically one that is suction-cupped to a window in your home. While gathering 
+          seed, a Raspberry Pi computer detects motion and takes a picture of the bird. This image is then sent 
+          to a Google Cloud instance where it is classified using a Keras-based machine-learning model. Upon 
+          classification, this image and associated metadata is sent to a locally-hosted Django website. Here, 
+          a post is created for the appropriate user which consists of the image, date, and species name. Users 
+          can view the birds that have recently visited their feeder, as well as learn what kind of seed each 
+          species likes the most. The result is a robust application which consists of multiple efficient and 
+          effective parts which can classify twenty bird species with an eighty-percent accuracy.
+        </p>
+      </div>
+
+    
+      <div class="content-wrap divider">
+        <h2>Tecnical Overview</h2>
+        <h4>Software</h4>
+      </div>
+
+      <!-- ******************  EDUCATION & CERTIFICATIONS ****************** -->
+    <section class="education item-details">
+      <div class="content-wrap">
+        <h2>Education</h2>
+
+        <p>
+          Both of us studied computer science at Wentworth Institute of Technology in 
+          Boston, Massachusetts.
+        </p>
+
+      <!-- *****************  CONTACT INFO / SOCIAL MEDIA  ***************** -->
+      <footer>
+        <div class="content-wrap">
+          <h2>Let's Keep in Touch!</h2>
+
+          <!-- Social media and contact links. Add or remove any networks. -->
+          <h4>Wil's info</h4>
+          <ul class="contact-list">
+            <li><a href="mailto:eddyw@wit.edu">eddyw@wit.edu</a></li>
+            <li><a href="https://github.com/weddy3" target="_blank">GitHub</a></li>
+            <li><a href="https://www.linkedin.com/in/william-eddy/" target="_blank">LinkedIn</a></li>
+          </ul>
+          <h4>Nick's Info</h4>
+          <ul class="contact-list">
+            <li><a href="mailto:moyern@wit.edu">moyern@wit.edu</a></li>
+            <li><a href="https://github.com/moyernwentworth" target="_blank">GitHub</a></li>
+            <li><a href="https://www.linkedin.com/in/nicholas-moyer/" target="_blank">LinkedIn</a></li>
+          </ul>
+        </div>
+      </footer>
+    </main>
+  </body>
 {% endblock content %}
