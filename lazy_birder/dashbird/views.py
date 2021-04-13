@@ -30,6 +30,12 @@ def bird_posts(request):
     new_pic_list = [pic for pic in os.listdir(new_path)]
     # create post for each new image
     for pic in new_pic_list:
+        string_list = pic.replace('.jpeg','').split('_')
+        species = ''
+        if (len(string_list) == 5 ):
+            species = str(string_list[0]) + ' ' + str(string_list[1])
+        else:
+            species = str(string_list[0])
         # resize pic
         resized_pic = Image.open(os.path.join(new_path, pic))
         resized_pic = resized_pic.resize((400, 300))
@@ -38,9 +44,9 @@ def bird_posts(request):
         shutil.move(os.path.join(new_path, pic), old_path)
         # Create post
         automated_post = Post(
-                title = 'Test Post',
+                title = species,
                 author = current_user,
-                content = 'Bird Species Here',
+                content = 'A ' + species + ' visited your feeder!',
                 date_posted = datetime.now(),
                 bird_photo = os.path.join('..', 'media', str(current_user), 'old', pic)
         )
