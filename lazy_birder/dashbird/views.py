@@ -6,14 +6,75 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from datetime import datetime
 from PIL import Image
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-import os, shutil
+import os, shutil, sys
 from django.contrib.auth.decorators import login_required
+from google.cloud import storage
+import pymysql
 
 
 # this is a function based view, have to render the request
 # ensure user is logged in
 @login_required
 def bird_posts(request):
+    ############################
+    yearlst = ["_21"]
+    year = yearlst[0]
+    monthlst=["Mar","Apr","May"]
+    month = monthlst[1]
+    daylst = datetime.today().day
+    day = str(daylst)
+
+    # input NORTHERN_FLICKER~nick_21Apr06_12_57_38.jpg
+    def downloadPics():
+        client = storage.Client.from_service_account_json(json_credentials_path=r'/Users/wil/Code/gcp_key.json')
+        # get bucket 
+        bucket = client.get_bucket('processed-birds')
+        # Construct a client side representation of a blob.
+        # Note `Bucket.blob` differs from `Bucket.get_blob` as it doesn't retrieve
+        # any content from Google Cloud Storage. As we don't need additional data,
+        # using `Bucket.blob` is preferred here.
+        # https://googleapis.dev/python/storage/latest/client.html 
+        # https://github.com/GoogleCloudPlatform/python-docs-samples/blob/master/storage/cloud-client/storage_download_file.py
+        #source_blob_name = pic
+        #print (source_blob_name)
+        #'Users/wil/Code/Lazy-Birder/lazy_birder/media/wil/new'
+        destination_file_name = r'/Users/wil/Code/Lazy-Birder/lazy_birder/media/wil/new/' #+pic
+        old_file_name = r'/Users/wil/Code/Lazy-Birder/lazy_birder/media/wil/old/'
+        #blob = bucket.blob(source_blob_name)
+        #bucket = storage_client.get_bucket(bucket_name=bucket_name)
+        blobs = bucket.list_blobs()
+        for blobOrig in blobs:
+            blob = str(blobOrig.name).split("~")
+            print (blob[0])
+            blob = blob[1]
+
+            if blob[:4] == "nick":
+                if blob[:7] == "nick" + year:
+                    if blob[:10] == "nick" + year + month:
+                        if blob[:12] == "nick" + year + month + day:
+                            filename = blobOrig.name.replace(':', '-')
+                            if os.path.exists(old_file_name + filename) == False:
+                                blobOrig.download_to_filename(destination_file_name + filename)  # Download
+        
+        #blob.download_to_filename(destination_file_name)
+
+        #print(
+        #    "Blob {} downloaded to {}.".format(
+        #        source_blob_name, destination_file_name
+        #    )
+        #)
+
+    def main():
+        print("start")
+        downloadPics()
+        os.environ['CONNECTION_NAME'] = 'utility-range-305718:us-central1:lazybirderdb'
+        os.environ['DB_USER'] = 'user'
+        os.environ['DB_PASSWORD'] = 'LazyPassword01'
+        os.environ['DB_NAME'] = 'ProcImages'
+        #getSQL()
+
+    main()
+    ######################################
     # get current logged in user
     current_user = request.user
     # create paths for user's folders that will hold images
@@ -30,9 +91,9 @@ def bird_posts(request):
     new_pic_list = [pic for pic in os.listdir(new_path)]
     # create post for each new image
     for pic in new_pic_list:
-        string_list = pic.replace('.jpeg','').split('_')
+        string_list = pic.replace('.jpg','').replace('~','_').split('_')
         species = ''
-        if (len(string_list) == 5 ):
+        if (len(string_list) == 7 ):
             species = str(string_list[0]) + ' ' + str(string_list[1])
         else:
             species = str(string_list[0])
