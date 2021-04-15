@@ -1,10 +1,15 @@
-I'm using python 3.8.2, doesn't really matter what you're using. Just a heads up. If you're on a *nix system though consider getting `pyenv`, allows you to download versions from command line as opposed to going to python.org blah blah blah.
+# Lazy Birder
+This project was created by two undergraduate computer science students for a senior project class. The overarching goal is to have users learn more about the birds in their backyard. Lazy Birder is a unique application consisting of a connected network of hardware and software components which classifies birds, by species, that visit your home. This process is initialized when a bird comes to your bird feeder, specifically one that is suction-cupped to a window in your home. While gathering seed, a Raspberry Pi computer detects motion and takes a picture of the bird. This image is then sent to a Google Cloud instance where it is classified using a Keras-based machine-learning model. Upon classification, this image and associated metadata is sent to a locally-hosted Django website. Here, a post is created for the appropriate user which consists of the image, date, and species name. Users can view the birds that have recently visited their feeder, as well as learn what kind of seed each species likes the most. The result is a robust application which consists of multiple efficient and effective parts which can classify twenty bird species with an eighty-percent accuracy.
 
-First thing is to clone this and then in the top directory run:
 
-`python -m venv env`
+## Website Setup
+This process will eventually be replaced by a startup script, but for now here are instructions.
 
-This will create a virtual environment folder in that directory that will be used to
+The first thing you want to do is to create a virtual environment with our project's dependicies. `cd` into the directory in which you cloned this repo. The run
+
+`python -m venv env` or `python3 -m venv venv`
+
+This will create a virtual environment folder named `venv`, in that directory that will be used to
 control package versions and python version. On *nix systems, run 
 
 `source venv/bin/activate`
@@ -29,3 +34,5 @@ you must also go into your google settings and allow less secure app access in o
 probably best to turn that off after
 
 Images go in new folder, get moved to old
+
+## Adding Additional Bird Species to the Model

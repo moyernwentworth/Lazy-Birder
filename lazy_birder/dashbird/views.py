@@ -48,13 +48,9 @@ def bird_posts(request):
             print (blob[0])
             blob = blob[1]
 
-            if blob[:4] == "nick":
-                if blob[:7] == "nick" + year:
-                    if blob[:10] == "nick" + year + month:
-                        if blob[:12] == "nick" + year + month + day:
-                            filename = blobOrig.name.replace(':', '-')
-                            if os.path.exists(old_file_name + filename) == False:
-                                blobOrig.download_to_filename(destination_file_name + filename)  # Download
+            filename = blobOrig.name.replace(':', '-')
+            if os.path.exists(destination_file_name + filename) == False:
+                blobOrig.download_to_filename(destination_file_name + filename)  # Download
         
         #blob.download_to_filename(destination_file_name)
 
