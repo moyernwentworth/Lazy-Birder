@@ -1,34 +1,133 @@
 {% extends "dashbird/base.html" %}
+{% load static %}
 {% block content %}
-<h1>Dashbird Home</h1>
-{% for post in posts %}
-<article class="media content-section">
-  <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
-    <div class="media-body">
-      <div class="article-metadata">
-        <a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
-        <small class="text-muted">{{ post.date_posted|date:'F d, Y, g:i' }}</small>
+<head>
+<link rel="stylesheet" type="text/css" href="{% static 'dashbird/styles.css' %}">
+</head>
+
+<body>
+  <main>
+    <!-- ***********************  ABOUT / PROFILE  *********************** -->
+    <header>
+      <div class="content-wrap">
+        <h1>Lazy Birder</h1>
+        <h2>Wil Eddy & Nick Moyer</h2>
       </div>
-      <h2><a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h2>
-      <p class="article-content">{{ post.content }}</p>
-    </div>
-</article>
-{% endfor %}
-{% if is_paginated %}
-  {% if page_obj.has_previous %}
-    <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
-    <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
-  {% endif %}
-  {% for num in page_obj.paginator.page_range %}
-    {% if page_obj.number == num %}
-      <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
-    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}  
-      <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
-    {% endif %}
-  {% endfor %}
-  {% if page_obj.has_next %}
-    <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
-    <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
-  {% endif %}
-{% endif %}
+    </header>
+
+      <!-- ********************  ABSTRACT  ********************* -->
+    <section class="projects">
+      <div class="content-wrap divider">
+        <h2>Abstract</h2>
+        <p>
+          This project was created by two undergraduate computer science students for a senior project class. 
+          The overarching goal is to have users learn more about the birds in their backyard. Lazy Birder is a 
+          unique application consisting of a connected network of hardware and software components which 
+          classifies birds, by species, that visit your home. This process is initialized when a bird comes to 
+          your bird feeder, specifically one that is suction-cupped to a window in your home. While gathering 
+          seed, a Raspberry Pi computer detects motion and takes a picture of the bird. This image is then sent 
+          to a Google Cloud instance where it is classified using a Keras-based machine-learning model. Upon 
+          classification, this image and associated metadata is sent to a locally-hosted Django website. Here, 
+          a post is created for the appropriate user which consists of the image, date, and species name. Users 
+          can view the birds that have recently visited their feeder, as well as learn what kind of seed each 
+          species likes the most. The result is a robust application which consists of multiple efficient and 
+          effective parts which can classify twenty bird species with an eighty-percent accuracy.
+        </p>
+      </div>
+
+    
+      <div class="content-wrap divider">
+        <h2>Tecnical Overview</h2>
+        <h4>Software</h4>
+        <li>Use Django for backend </li>
+        <li>Use Google Cloud for database and image processing</li>
+        <li>Html/Css/jinja templating for front end</li>
+        <li>Python for training and image recognition using Keras</li>
+        <li>Bash Scripting</li>
+        <br></br>
+        <h4>Hardware</h4>
+        <li>Raspberry Pi 4 model B</li>
+        <li>Raspberry Pi camera module</li>
+        <li>PIR Sensor</li>
+        <li>Local and Hosted Servers for website and Google Cloud Platform</li>
+        <li>Miscellaneous Raspberry Pi components (wiring, case, etc)</li>
+      </div>
+
+      <div class="content-wrap divider">
+        <h2>The Codebase</h2>
+        <p>
+          This project's code can be found on the <a href="https://github.com/moyernwentworth/Lazy-Birder" target="_blank">Lazy Birder's Github</a>. 
+          Full setup instructions can be found there in the README-dev.md file. 
+        </p>
+      </div>
+
+      <div class="content-wrap divider">
+        <h2>The Computer Vision Model</h2>
+        <p>
+          Using Python's Keras, we designed a convolutional neural network that combines with a YOLO object detector to classify 20 different bird species.
+          Developement was perfomed using Google Collab. Instructions for adding additonal bird species are also found in the README-dev.md file in the GitHub
+          repository if you are interested. The currently supported bird species are:
+          <li>Black-capped Chickadee</li>
+          <li>Northern Cardinal</li>
+          <li>American Crow</li>
+          <li>American Goldfinch</li>
+          <li>Baltimore Oriole</li>
+          <li>Chipping Sparrow</li>
+          <li>Common Grackle</li>
+          <li>Common Starling</li>
+          <li>Dark-eyed Junco</li>
+          <li>Downy Woodpecker</li>
+          <li>Eastern Bluebird</li>
+          <li>Gray Catbird</li>
+          <li>House Finch</li>
+          <li>House Sparrow</li>
+          <li>Mourning Dove</li>
+          <li>Northern Flicker</li>
+          <li>Purple Finch</li>
+          <li>Red-headed Woodpecker</li>
+          <li>Red-winged Blackbird</li>
+          <li>Tufted Titmouse</li>
+        </p>
+      </div>
+
+      <div class="content-wrap divider">
+        <h2>Learning Center</h2>
+        <p>
+          For those who are interested in what seed types the birds at their house enjoy the most, 
+          <a href="https://www.wild-bird-watching.com/Bird_Seed.html" target="_blank">here</a></li> is a helpful link!
+        </p>
+      </div>
+
+      <!-- ******************  EDUCATION & CERTIFICATIONS ****************** -->
+    <section class="education item-details">
+      <div class="content-wrap">
+        <h2>Education</h2>
+
+        <p>
+          Both of us studied computer science at Wentworth Institute of Technology in 
+          Boston, Massachusetts.
+        </p>
+
+      <!-- *****************  CONTACT INFO / SOCIAL MEDIA  ***************** -->
+      <footer>
+        <div class="content-wrap">
+          <h2>Let's Keep in Touch!</h2>
+
+          <!-- Social media and contact links. Add or remove any networks. -->
+          <h4>Wil's info</h4>
+          <ul class="contact-list">
+            <li><a href="mailto:eddyw@wit.edu">eddyw@wit.edu</a></li>
+            <li><a href="https://github.com/weddy3" target="_blank">GitHub</a></li>
+            <li><a href="https://www.linkedin.com/in/william-eddy/" target="_blank">LinkedIn</a></li>
+          </ul>
+          <h4>Nick's Info</h4>
+          <ul class="contact-list">
+            <li><a href="mailto:moyern@wit.edu">moyern@wit.edu</a></li>
+            <li><a href="https://github.com/moyernwentworth" target="_blank">GitHub</a></li>
+            <li><a href="https://www.linkedin.com/in/nicholas-moyer/" target="_blank">LinkedIn</a></li>
+          </ul>
+        </div>
+      </footer>
+    </main>
+  </body>
 {% endblock content %}
