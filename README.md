@@ -33,10 +33,10 @@
 	- reflect that path in files
 - Create an empty Dir "mkdir website"
 	- Initialize git hub in that folder
-	- clone this project and switch branch "git checkout Postautomation" to the PostAutomation branch
+	- clone this project and switch branch ```git checkout Postautomation``` to the PostAutomation branch
 	- Follow that branches read me to set up the website 
 	- After setting up the site on your raspberry pi you will need to run it differently and make one edit in your settings.py 
-	- to run on local network from pi "python manage.py runserver 0.0.0.0:8000"
+	- to run on local network from pi ```python manage.py runserver 0.0.0.0:8000```
 		- to connect go to raspberyIP:8000 (or if you use a different port connect to that port)
 		- you will see an error regarding allowed hosts
 	- Edit settings.py in website, in ALLOWEDHOSTS = [] add 'raspberyIP'
@@ -65,8 +65,8 @@
 	- should see no jobs
 - now type "crontab -e"
 	- enter the following lines
-	- 0 6 * * * /usr/bin/python3 /home/pi/scripts/watch4Motion.py >> ~/cron.log 2>&1
-	- * * * * * /usr/bin/env bash -c 'cd /home/pi/website/Lazy-Birder/lazy_birder && source /home/pi/website/env/bin/activate && ./manage.py runserver 0.0.0.0:8000' >> ~/run.log 2>&1
+	- ```0 6 * * * /usr/bin/python3 /home/pi/scripts/watch4Motion.py >> ~/cron.log 2>&1```
+	- ```* * * * * /usr/bin/env bash -c 'cd /home/pi/website/Lazy-Birder/lazy_birder && source /home/pi/website/env/bin/activate && ./manage.py runserver 0.0.0.0:8000' >> ~/run.log 2>&1```
 - Explanation
 	- cron jobs are jobs you tell it to do at a specific time
 	- the first line we add starts our watch4motion.py script at 6 in the morning (script should exit at 8pm) and prints any errors to cron.log
