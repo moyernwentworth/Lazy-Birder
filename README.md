@@ -72,4 +72,4 @@
 	- crons do not run prints correctly avoid them for anything other than trouble shooting
 	- cron jobs are jobs you tell it to do at a specific time
 	- the first line we add starts our watch4motion.py script at 6 in the morning (script should exit at 8pm) and prints any errors to cron.log
-	- second cron enables the bash env shell so we can use commands, from here you source the venv you set up in Postautomation and run the server on the local host at port 8000
+	- second cron enables the bash env shell so we can use commands, from here you source the venv you set up in Postautomation and run the server on the local host at port 8000 and prints errors to run.log
