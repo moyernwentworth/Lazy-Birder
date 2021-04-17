@@ -10,7 +10,7 @@
 # Step-1: set-up (disregard if connecting to existing project)
 - Create 3 google cloud storage buckets, called input, pre-process and processed
 	- pick on time zone
-- Create 2 python 3.7 google cloud functions (we'll fill later) (4gb < of mem)
+- Create 2 python 3.7 google cloud functions (we'll fill later) (4gb > of mem on creation)
 	- trigger one on upload to input bucket
 	- trigger one on upload to pre-processed bucket
 
@@ -24,43 +24,39 @@
 	- (optional) create a shared or network folder
 - create a dir called scripts ('home/pi/scripts')
 	- add the two script from the Raspbery-Pi folder 
-	- change variable to reflect project
-- You will have to update some components depending on several things
+	- change variables to reflect your project
+- You will have to update some components depending on several things, errors will let you know what to pip install, working on requirements.txt for pi 
 	- most-likey
 		- Python
 		- google
-			- this will let you know which pip to use with the script
-- you must authenticate you Raspbery-Pi by getting and storing a key file 
+			- google-cloud-storage
+- you must authenticate you Raspbery-Pi scripts by getting and storing a key.json file from the google console 
 	- reflect that path in files
-- Create an empty Dir "mkdir website"
-	- Initialize git hub in that folder
-	- clone this project and switch branch ```git checkout Postautomation``` to the PostAutomation branch
+- Create an empty Dir ```mkdir website```
+	- Initialize github in that folder
+	- clone this project and switch the branch if not already on main ```git status``` then ```git checkout main``` to switch to the main branch
 	- Follow that branches read me to set up the website 
-	- After setting up the site on your raspberry pi you will need to run it differently and make one edit in your settings.py 
+	- After setting up the site on your raspberry pi you will need to run it differently and make one edit in your settings.py and several in views.py
+	- Edit website paths for keys and file locations in views.py  
 	- to run on local network from pi ```python manage.py runserver 0.0.0.0:8000```
 		- to connect go to raspberyIP:8000 (or if you use a different port connect to that port)
 		- you will see an error regarding allowed hosts
 	- Edit settings.py in website, in ALLOWEDHOSTS = [] add 'raspberyIP'
-	- Edit website paths for keys and file locations in views.py  
 
 # Step-3: Setting-up Functions
 - Add the google functions with the respective requirements into functions we created earlier 
-	- process-image is trigger: upload to the input bucket
-	- bird-detect: pre-process bucket upload
-- write in sensative variables and add path to the needed files (you can place in any bucket and reference) 
+	- process-image triggered: upload to the output/processed bird bucket
+	- bird-detect triggered: pre-process bucket upload
+- write in sensative variables and add path to the needed files (you can place in any bucket and reference with gs://) 
 - Add the service account key file for you project 
-	- after createing the addcout ad a json key file and copy it with the same name
+	- after createing the functions create a json key file and copy it with the same name into both projects to reference easily 
 	
 # Step-4: checking in 
 - After running watch4motion.py on the Raspbery-Pi you should start seeing:
-	- images in the process-bucket
-	- MYSQL entrees that link the the process-bucket image
-	
-# Step-5: issues
-- contact me:
-	- moyern@wit.edu
+	- if the prints are commented out, you will see nothing
+	- go to your input bucket to look at files, and you procceded-birds bucket to see if they classified 
 
-# Step-6: run 24/7 (optional: set up crons) 
+# Step-5: run 24/7 (optional: set up crons) 
 - run watch4motion.py and website code 24/7 
 - ssh into raspbery pi type "crontab -l"
 	- should see no jobs
@@ -73,3 +69,9 @@
 	- cron jobs are jobs you tell it to do at a specific time
 	- the first line we add starts our watch4motion.py script at 6 in the morning (script should exit at 8pm) and prints any errors to cron.log
 	- second cron enables the bash env shell so we can use commands, from here you source the venv you set up in Postautomation and run the server on the local host at port 8000 and prints errors to run.log
+
+# Step-6: issues
+- contact me:
+	- moyern@wit.edu
+
+
