@@ -64,10 +64,10 @@
 - run watch4motion.py and website code 24/7 
 - ssh into raspbery pi type "crontab -l"
 	- should see no jobs
-- now type "crontab -e"
+- now type ```crontab -e```
 	- enter the following lines
 	- ```0 6 * * * /usr/bin/python3 /home/pi/scripts/watch4Motion.py >> ~/cron.log 2>&1```
-	- ```* * * * * /usr/bin/env bash -c 'cd /home/pi/website/Lazy-Birder/lazy_birder && source /home/pi/website/env/bin/activate && ./manage.py runserver 0.0.0.0:8000' >> ~/run.log 2>&1```
+	- ```* * * * * /usr/bin/env bash -c 'cd /home/pi/website/Lazy-Birder/lazy_birder && source /home/pi/website/Lazy-Birder/env/bin/activate && ./manage.py runserver 0.0.0.0:8000' >> ~/run.log 2>&1```
 - Explanation
 	- crons do not run prints correctly avoid them for anything other than trouble shooting
 	- cron jobs are jobs you tell it to do at a specific time
