@@ -21,7 +21,7 @@ def register(request):
     return render(request, 'users/register.html', {'form': form})
 
 
-# decorator adds function to exisiting stuff
+# decorator which ensures user is logged in
 @login_required
 def profile(request):
     """send users to their specific profile, ensuring theyre logged in"""
@@ -29,6 +29,7 @@ def profile(request):
     if request.method == 'POST':
         u_form = UserUpdateForm(request.POST, request.FILES, instance=request.user)
         p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+        # if all info is updated properly, the user and profile objects are updated
         if u_form.is_valid() and p_form.is_valid():
             u_form.save()
             p_form.save()
@@ -38,8 +39,11 @@ def profile(request):
         u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance=request.user.profile)
 
+    # render function below takes in a dict of content to be displayed
+    # in this case is is the user's info
     context = {
         'u_form': u_form,
         'p_form': p_form
     }
+    # returns the updated page to be viewed
     return render(request, 'users/profile.html', context)

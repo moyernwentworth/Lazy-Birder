@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
 
+# defines all of the fields to be stored for a post object on our site
 class Post(models.Model):
     title = models.CharField(max_length=100)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -15,5 +16,5 @@ class Post(models.Model):
 
 
     def get_absolute_url(self):
-        # this gives the address to be sent to after a user creates a post
+        # returns the address to be sent to after a user creates a post
         return reverse('post-detail', kwargs={'pk': self.pk})

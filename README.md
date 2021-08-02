@@ -1,6 +1,9 @@
 # Lazy Birder
 This project was created by two undergraduate computer science students for a senior project class. The overarching goal is to have users learn more about the birds in their backyard. Lazy Birder is a unique application consisting of a connected network of hardware and software components which classifies birds, by species, that visit your home. This process is initialized when a bird comes to your bird feeder, specifically one that is suction-cupped to a window in your home. While gathering seed, a Raspberry Pi computer detects motion and takes a picture of the bird. This image is then sent to a Google Cloud instance where it is classified using a Keras-based machine-learning model and YOLO object detection. Upon classification, this image and associated metadata is sent to a locally-hosted Django website. Here, a post is created for the appropriate user which consists of the image, date, and species name. Users can view the birds that have recently visited their feeder, as well as learn what kind of seed each species likes the most. The result is a robust application which consists of multiple efficient and effective parts which can classify twenty bird species with an eighty-percent accuracy.
 
+## Demo Video
+View our demo video [here](https://www.youtube.com/watch?v=6MpHF3LUluQ&t=3s) to see what this project run from end to end.
+
 ## Hardware and Server Setup
 See the Nick branch Readme to get more information about setting up your raspberry pi and google cloud instance.
 

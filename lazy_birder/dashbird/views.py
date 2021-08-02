@@ -6,17 +6,15 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from datetime import datetime
 from PIL import Image
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-import os, shutil, sys
+import os, shutil
 from django.contrib.auth.decorators import login_required
 from google.cloud import storage
-import pymysql
 
 
-# this is a function based view, have to render the request
 # ensure user is logged in
 @login_required
 def bird_posts(request):
-    ############################
+    # variables that are used for google cloud platform purposes
     yearlst = ["_21"]
     year = yearlst[0]
     monthlst=["Mar","Apr","May"]
@@ -24,9 +22,13 @@ def bird_posts(request):
     daylst = datetime.today().day
     day = str(daylst)
 
-    # input NORTHERN_FLICKER~nick_21Apr06_12_57_38.jpg
     def downloadPics():
+        """Using a gcp key as described in the readme, download images from your 
+        bucket which are the bird photos from your feeder"""
+
+        # see readme for setting up client variable
         client = storage.Client.from_service_account_json(json_credentials_path=r'/Users/wil/Code/gcp_key.json')
+
         # get bucket 
         bucket = client.get_bucket('processed-birds')
         # Construct a client side representation of a blob.
@@ -35,44 +37,34 @@ def bird_posts(request):
         # using `Bucket.blob` is preferred here.
         # https://googleapis.dev/python/storage/latest/client.html 
         # https://github.com/GoogleCloudPlatform/python-docs-samples/blob/master/storage/cloud-client/storage_download_file.py
-        #source_blob_name = pic
-        #print (source_blob_name)
-        #'Users/wil/Code/Lazy-Birder/lazy_birder/media/wil/new'
+    
         destination_file_name = r'/Users/wil/Code/Lazy-Birder/lazy_birder/media/wil/new/' #+pic
-        old_file_name = r'/Users/wil/Code/Lazy-Birder/lazy_birder/media/wil/old/'
-        #blob = bucket.blob(source_blob_name)
-        #bucket = storage_client.get_bucket(bucket_name=bucket_name)
         blobs = bucket.list_blobs()
+        # for all images in your google bucket, save with a predetermined naming convention
         for blobOrig in blobs:
             blob = str(blobOrig.name).split("~")
             print (blob[0])
             blob = blob[1]
-
             filename = blobOrig.name.replace(':', '-')
             if os.path.exists(destination_file_name + filename) == False:
                 blobOrig.download_to_filename(destination_file_name + filename)  # Download
-        
-        #blob.download_to_filename(destination_file_name)
-
-        #print(
-        #    "Blob {} downloaded to {}.".format(
-        #        source_blob_name, destination_file_name
-        #    )
-        #)
 
     def main():
+        # download pictures from bucket and set local environment variables
         print("start")
         downloadPics()
         os.environ['CONNECTION_NAME'] = 'utility-range-305718:us-central1:lazybirderdb'
         os.environ['DB_USER'] = 'user'
         os.environ['DB_PASSWORD'] = 'LazyPassword01'
         os.environ['DB_NAME'] = 'ProcImages'
-        #getSQL()
 
     main()
-    ######################################
     # get current logged in user
     current_user = request.user
+
+    # the followinf blocks take in downloaded images, gathers info from its name, resizes
+    # the images, and then saves image and metadata to a post object which is then displayed to the user
+
     # create paths for user's folders that will hold images
     base_path = os.path.join(os.path.dirname(os.path.dirname(__file__)),'media', str(current_user))
     old_path = os.path.join(os.path.dirname(os.path.dirname(__file__)),'media', str(current_user), 'old')
@@ -83,8 +75,10 @@ def bird_posts(request):
         os.mkdir(old_path)
     if not os.path.isdir(new_path):
         os.mkdir(new_path)
+
     # see what pics have been added to new_dir in each user's
     new_pic_list = [pic for pic in os.listdir(new_path)]
+
     # create post for each new image
     for pic in new_pic_list:
         string_list = pic.replace('.jpg','').replace('~','_').split('_')
@@ -93,13 +87,16 @@ def bird_posts(request):
             species = str(string_list[0]) + ' ' + str(string_list[1])
         else:
             species = str(string_list[0])
+
         # resize pic
         resized_pic = Image.open(os.path.join(new_path, pic))
         resized_pic = resized_pic.resize((400, 300))
         resized_pic.save(os.path.join(new_path, pic))
+
         # move new photo to old folder where it will be served
         shutil.move(os.path.join(new_path, pic), old_path)
-        # Create post
+
+        # Create post object using the post model
         automated_post = Post(
                 title = species,
                 author = current_user,
@@ -108,14 +105,17 @@ def bird_posts(request):
                 bird_photo = os.path.join('..', 'media', str(current_user), 'old', pic)
         )
         automated_post.save()
+
     # ensure list is empty next time through
     new_pic_list = []
 
     post_list =  Post.objects.filter(author=current_user).order_by('-date_posted')
-    # if we want to show all users posts
-    # post_list = Post.objects.all().order_by('-date_posted')
+
+    # show logged in users posts 
     page = request.GET.get('page', 1)
     paginator = Paginator(post_list, 5)
+
+    # account for not enough post objects to fill a paginated page
     try: 
         posts = paginator.page(page)
     except PageNotAnInteger:
@@ -123,9 +123,6 @@ def bird_posts(request):
     except EmptyPage:
         posts = paginator.page(paginator.num_pages)
 
-    # context = {
-    #     'posts': Post.objects.all()
-    # }
     return render(request, 'dashbird/bird_posts.html', {'posts': posts})
 
 
@@ -133,32 +130,9 @@ def home(request):
     return render(request, 'dashbird/home.html')
 
 
-# this is a class based view
-class PostListView(ListView):
-    model = Post
-    # <app>/<model>_<viewtype>.html
-    template_name = 'dashbird/home.html'
-    context_object_name = 'posts'
-    # posts go from most recent on the top
-    ordering = ['-date_posted']
-    # set number of posts per page
-    paginate_by = 5
-
-    def automate_posts(self, request):
-        automated_post = Post(
-            title = 'Test Post',
-            author = self.request.user,
-            content = 'This is an example post',
-            date_posted = datetime.now(),
-            bird_photo = 'media/test1.jpeg'
-        )
-        automated_post.save()
-
-
-
 class UserPostListView(ListView):
+    """Can filter to see only a selected user's posts"""
     model = Post
-    # <app>/<model>_<viewtype>.html
     template_name = 'dashbird/user_posts.html'
     context_object_name = 'posts'
     # set number of posts per page
@@ -173,12 +147,14 @@ class UserPostListView(ListView):
         
 
 class PostDetailView(DetailView):
+    """Shows a full page of details of a selected post"""
     model = Post
     fields = ['title', 'content', 'bird_photo']
 
 
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    """Allows users to change the title and content of their posts"""
     model = Post
     fields = ['title', 'content', 'bird_photo']
 
@@ -192,6 +168,7 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return True if self.request.user == post.author else False
 
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    """Allows uers to delete there own posts"""
     model = Post
     success_url = '/'
 
